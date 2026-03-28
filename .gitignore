@@ -1,0 +1,4 @@
+# Ignore everything at the MyCode root except less-gram
+/*
+!/.gitignore
+!/less-gram/

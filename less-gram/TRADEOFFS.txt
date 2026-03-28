@@ -1,0 +1,39 @@
+FRAMEWORK TRADEOFF ANALYSIS: Blazor MAUI vs Swift/SwiftUI
+==========================================================
+Decision: Swift/SwiftUI (chosen)
+Date: 2026-03-28
+
+CONTEXT
+-------
+LessGram is a focused Instagram client that loads instagram.com inside a controlled
+WebView and injects CSS/JS to strip addictive features (Reels, Explore, Ads).
+The quality of that injection is what defines the user experience.
+
+COMPARISON
+----------
+
+Factor                          | Blazor MAUI           | Swift/SwiftUI
+--------------------------------|-----------------------|---------------------------
+Rider support                   | First-class           | Poor (Xcode required)
+Language familiarity            | C# (familiar)         | New for team
+JS injection timing             | After load only       | At document start (no flash)
+CSS/JS blocking control         | Limited               | Full WKUserScript API
+Cookie/session persistence      | Harder to control     | Native WKHTTPCookieStore
+Navigation policy (/reels/)     | Hacky                 | WKNavigationDelegate
+App size                        | ~50MB+                | ~5MB
+Performance                     | Extra WebView layer   | Native
+TestFlight reliability          | More moving parts     | Solid
+
+KEY DECIDING FACTOR
+-------------------
+Injection timing. WKUserScript in Swift injects CSS/JS *at document start*, before
+the DOM is painted. MAUI's WebView only exposes EvaluateJavaScriptAsync, which fires
+*after* load — meaning Reels elements briefly render before being hidden. That flash
+is the jank SocialLite users complained about. Eliminating it requires native APIs.
+
+VERDICT
+-------
+Swift is the right call for this specific app type. SwiftUI is declarative in the
+same style as modern C# UI frameworks, so the learning curve is manageable.
+Xcode is required for builds and signing but editing can be done in Rider/VS Code
+with the Swift plugin.
