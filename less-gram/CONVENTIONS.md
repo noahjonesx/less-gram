@@ -116,15 +116,25 @@ Changes to this table require a PR with discussion — it defines the product.
 
 ---
 
-## Xcode Project Setup (one-time, per machine)
+## Xcode Project Setup (one-time, per Mac)
+
+The `.xcodeproj` is **generated** by XcodeGen from `project.yml` — it is not committed to git.
 
 1. Install Xcode from the Mac App Store (free)
-2. Open Xcode → File → New → Project → iOS → App
-3. Product Name: `LessGram`, Interface: `SwiftUI`, Language: `Swift`
-4. Save into the `less-gram/` repo directory
-5. Delete the generated `ContentView.swift` and replace with files from `LessGram/`
-6. Add `LessGram/Scripts/` as a folder reference (not a group) so files are bundled
-7. Set minimum deployment target to iOS 16.0
+2. Install XcodeGen: `brew install xcodegen`
+3. From `less-gram/`: run `xcodegen generate`
+4. Open the generated `LessGram.xcodeproj`
+5. Set your Apple Developer team in Signing & Capabilities
+
+Re-run `xcodegen generate` any time `project.yml` changes.
+
+---
+
+## CI / GitHub Actions
+
+Every push to `main` or a `*/dev` branch triggers a build via `.github/workflows/build.yml`.
+The workflow runs on a macOS runner, installs XcodeGen, generates the project, and builds
+for the iOS Simulator (no signing required). A red CI badge = broken build, fix before merging.
 
 ---
 
