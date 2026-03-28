@@ -1,0 +1,29 @@
+name: LessGram
+
+options:
+  bundleIdPrefix: com.lessgram
+  deploymentTarget:
+    iOS: "16.0"
+
+targets:
+  LessGram:
+    type: application
+    platform: iOS
+    deploymentTarget: "16.0"
+    sources:
+      - LessGram
+    info:
+      path: LessGram/Info.plist
+      properties:
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSAppTransportSecurity:
+          NSAllowsArbitraryLoads: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.lessgram.app
+        SWIFT_VERSION: "5.9"
+        TARGETED_DEVICE_FAMILY: "1"
+        MARKETING_VERSION: "1.0"
+        CURRENT_PROJECT_VERSION: "1"
