@@ -10,9 +10,6 @@ Built with Expo + React Native. iOS only. Test with Expo Go — no Mac required.
 npm install
 npx expo start
 ```
-
-Scan the QR code with **Expo Go** (free on the App Store) to run on your iPhone.
-
 ---
 
 ## How It Works
