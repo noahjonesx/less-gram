@@ -1,39 +1,52 @@
-FRAMEWORK TRADEOFF ANALYSIS: Blazor MAUI vs Swift/SwiftUI
-==========================================================
-Decision: Swift/SwiftUI (chosen)
+FRAMEWORK TRADEOFF ANALYSIS
+============================
+
+DECISION 1: Blazor MAUI vs Swift/SwiftUI
+-----------------------------------------
+Initial decision: Swift/SwiftUI
+Reversed: Yes — see Decision 2
+
+Reason Swift won initially:
+- WKWebView injects CSS/JS at document start (no flash)
+- Full WKNavigationDelegate for hard URL blocking
+- Smaller app size (~5MB vs ~50MB)
+- Native performance
+
+Why it was reversed:
+- Team is on Windows — no Mac available for builds or device testing
+- Swift requires Mac + Xcode for every build, sign, and deploy step
+- No practical path to running the app without a Mac
+
+DECISION 2: Swift vs Expo + React Native (final)
+--------------------------------------------------
+Decision: Expo + React Native (chosen)
 Date: 2026-03-28
 
-CONTEXT
--------
-LessGram is a focused Instagram client that loads instagram.com inside a controlled
-WebView and injects CSS/JS to strip addictive features (Reels, Explore, Ads).
-The quality of that injection is what defines the user experience.
+Why Expo wins for this team:
+- Develop and test entirely on Windows
+- Expo Go app on iPhone = instant testing, no Mac, no Apple account
+- react-native-webview's injectedJavaScriptBeforeContentLoaded runs before DOM renders
+  (equivalent to WKUserScript atDocumentStart — solves the flash problem)
+- onShouldStartLoadWithRequest = hard navigation block (equivalent to WKNavigationDelegate)
+- Same blocking capabilities as Swift, in TypeScript
+- CI just needs a Node/TypeScript check — no macOS runner required for day-to-day
 
-COMPARISON
-----------
+When a Mac is eventually needed:
+- App Store submission only (EAS Build can handle this in the cloud)
+- Not needed for development, testing, or Expo Go distribution
 
-Factor                          | Blazor MAUI           | Swift/SwiftUI
+COMPARISON: Swift vs Expo/React Native for this app
+-----------------------------------------------------
+
+Factor                          | Swift/SwiftUI         | Expo + React Native
 --------------------------------|-----------------------|---------------------------
-Rider support                   | First-class           | Poor (Xcode required)
-Language familiarity            | C# (familiar)         | New for team
-JS injection timing             | After load only       | At document start (no flash)
-CSS/JS blocking control         | Limited               | Full WKUserScript API
-Cookie/session persistence      | Harder to control     | Native WKHTTPCookieStore
-Navigation policy (/reels/)     | Hacky                 | WKNavigationDelegate
-App size                        | ~50MB+                | ~5MB
-Performance                     | Extra WebView layer   | Native
-TestFlight reliability          | More moving parts     | Solid
-
-KEY DECIDING FACTOR
--------------------
-Injection timing. WKUserScript in Swift injects CSS/JS *at document start*, before
-the DOM is painted. MAUI's WebView only exposes EvaluateJavaScriptAsync, which fires
-*after* load — meaning Reels elements briefly render before being hidden. That flash
-is the jank SocialLite users complained about. Eliminating it requires native APIs.
-
-VERDICT
--------
-Swift is the right call for this specific app type. SwiftUI is declarative in the
-same style as modern C# UI frameworks, so the learning curve is manageable.
-Xcode is required for builds and signing but editing can be done in Rider/VS Code
-with the Swift plugin.
+Mac required to develop         | Yes                   | No
+Mac required to test on device  | Yes                   | No (Expo Go)
+Mac required for App Store      | Yes                   | Can use EAS Build (cloud)
+Injection timing (no flash)     | atDocumentStart       | injectedJavaScriptBeforeContentLoaded
+Hard navigation blocking        | WKNavigationDelegate  | onShouldStartLoadWithRequest
+Language                        | Swift (new for team)  | TypeScript (more accessible)
+Team's IDE (Rider)              | Poor Swift support    | Excellent JS/TS support
+Cookie persistence              | WKHTTPCookieStore     | sharedCookiesEnabled prop
+App size                        | ~5MB                  | ~25MB
+Performance                     | Native                | Near-native for WebView use case
