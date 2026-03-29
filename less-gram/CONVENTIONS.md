@@ -97,8 +97,8 @@ Changes require a PR with discussion.
 ## Setup
 
 ```bash
-npm install
-npx expo start
+yarn install
+yarn expo start
 ```
 
 Scan QR with **Expo Go** (App Store, free).
