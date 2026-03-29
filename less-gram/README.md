@@ -1,7 +1,5 @@
 # LessGram
 
-Instagram without the algorithm. No Reels. No Explore. No Ads. Just your feed, DMs, and profiles.
-
 Built with Expo + React Native. iOS only. Test with Expo Go — no Mac required.
 
 ---
