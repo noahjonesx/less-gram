@@ -10,29 +10,25 @@ on:
       - main
 
 jobs:
-  build:
-    name: Build iOS (no signing)
-    runs-on: macos-14
+  typecheck:
+    name: TypeScript check
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Install XcodeGen
-        run: brew install xcodegen
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: less-gram/yarn.lock
 
-      - name: Generate Xcode project
+      - name: Install dependencies
         working-directory: less-gram
-        run: xcodegen generate
+        run: yarn install --frozen-lockfile
 
-      - name: Build for simulator
+      - name: Type check
         working-directory: less-gram
-        run: |
-          xcodebuild build \
-            -project LessGram.xcodeproj \
-            -scheme LessGram \
-            -destination 'platform=iOS Simulator,name=iPhone 15' \
-            CODE_SIGN_IDENTITY="" \
-            CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=NO \
-            | xcpretty || exit 1
+        run: yarn tsc --noEmit

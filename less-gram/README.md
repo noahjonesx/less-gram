@@ -2,29 +2,28 @@
 
 Instagram without the algorithm. No Reels. No Explore. No Ads. Just your feed, DMs, and profiles.
 
-Built with Swift/SwiftUI + WKWebView. iOS only.
+Built with Expo + React Native. iOS only. Test with Expo Go — no Mac required.
 
 ---
 
-## Quick Start (Mac required for builds)
+## Quick Start
 
-1. Clone the repo
-2. Open `LessGram/LessGram.xcodeproj` in Xcode 15+
-3. Set your Apple Developer team in Signing & Capabilities
-4. Build and run on device or simulator (`Cmd+R`)
+```bash
+npm install
+npx expo start
+```
 
-See [CONVENTIONS.md](CONVENTIONS.md) before contributing.
+Scan the QR code with **Expo Go** (free on the App Store) to run on your iPhone.
 
 ---
 
 ## How It Works
 
-- Loads `instagram.com` in a `WKWebView` with cookie persistence (you stay logged in)
-- Injects CSS at document start to hide Reels nav, Explore, Ads, and Suggested posts
-- Injects JS to intercept SPA navigation and block routes like `/reels/`, `/explore/`
-- `WKNavigationDelegate` provides a hard block at the network level as a second layer
-- User agent is set to iPhone Safari so Instagram serves the correct mobile web UI
+- Loads `instagram.com` in a `react-native-webview`
+- Injects CSS/JS **before content loads** via `injectedJavaScriptBeforeContentLoaded` (no flash)
+- `onShouldStartLoadWithRequest` provides a hard navigation block for `/reels/`, `/explore/`, `/live/`
+- SPA navigation intercepted via `pushState`/`replaceState` override
+- MutationObserver hides dynamically injected ads and suggested posts
+- Cookie and localStorage persistence keeps you logged in across launches
 
-## Distribution
-
-TestFlight (internal). See CONVENTIONS.md for device testing requirements before merging.
+See [CONVENTIONS.md](CONVENTIONS.md) before contributing.
