@@ -6,7 +6,7 @@ Last updated: 2026-03-28
 
 ## Stack
 
-Expo SDK 51 · React Native · TypeScript · `react-native-webview`
+Expo SDK 54 · React Native · TypeScript · `react-native-webview`
 
 Wraps `instagram.com` in a controlled WebView. CSS/JS injected before content loads. See `TRADEOFFS.txt` for framework decisions.
 
